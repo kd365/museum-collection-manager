@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Museums - Museum Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 20px;">
+    <div class="page-header">
+        <h1>Museums</h1>
+        <div>
+            <a href="{{ url_for('export_csv', table_name='museums') }}" class="btn btn-secondary">Export CSV</a>
+            <a href="{{ url_for('create_museum') }}" class="btn btn-primary">+ Add Museum</a>
+        </div>
+    </div>
+
+    {% if museums %}
+    <div class="museums-grid">
+        {% for museum in museums %}
+        <div class="museum-card">
+            <div class="museum-header">
+                <h3>{{ museum.name }}</h3>
+                {% if museum.museum_type %}
+                <span class="badge">{{ museum.museum_type }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="museum-info">
+                {% if museum.city and museum.country %}
+                <p class="location"><i class="fas fa-map-marker-alt"></i> {{ museum.city }}, {{ museum.country }}</p>
+                {% endif %}
+                
+                {% if museum.established_date %}
+                <p class="established"><i class="fas fa-landmark"></i> Est. {{ museum.established_date.year }}</p>
+                {% endif %}
+                
+                {% if museum.annual_visitors %}
+                <p class="visitors"><i class="fas fa-users"></i> {{ "{:,}".format(museum.annual_visitors) }} visitors/year</p>
+                {% endif %}
+                
+                {% if museum.admission_fee %}
+                <p class="admission"><i class="fas fa-ticket-alt"></i> ${{ "{:.2f}".format(museum.admission_fee) }} admission</p>
+                {% elif museum.admission_fee == 0 %}
+                <p class="admission"><i class="fas fa-ticket-alt"></i> Free admission</p>
+                {% endif %}
+                
+                {% if museum.description %}
+                <p class="description">{{ museum.description[:150] }}{% if museum.description|length > 150 %}...{% endif %}</p>
+                {% endif %}
+                
+                {% if museum.website %}
+                <a href="{{ museum.website }}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Visit Website</a>
+                {% endif %}
+            </div>
+            
+            <div class="museum-actions">
+                <a href="{{ url_for('edit_museum', museum_id=museum.id) }}" class="btn-small btn-edit">Edit</a>
+                <form method="POST" action="{{ url_for('delete_museum', museum_id=museum.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this museum?');">
+                    <button type="submit" class="btn-small btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No museums registered yet.</p>
+        <a href="{{ url_for('create_museum') }}" class="btn btn-primary">Add First Museum</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.museums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.museum-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.museum-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.museum-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.museum-header h3 {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.museum-info p {
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.location {
+    font-weight: 600;
+}
+
+.description {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-top: 1rem;
+}
+
+.website-link {
+    display: inline-block;
+    color: var(--secondary-color);
+    text-decoration: none;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+
+.website-link:hover {
+    text-decoration: underline;
+}
+
+.museum-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-bg);
+}
+</style>
+{% endblock %}

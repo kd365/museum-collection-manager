@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Artists - Museum Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 20px;">
+    <div class="page-header">
+        <h1>Artists</h1>
+        <a href="{{ url_for('create_artist') }}" class="btn btn-primary">+ Add Artist</a>
+    </div>
+
+    {% if artists %}
+    <div class="artists-grid">
+        {% for artist in artists %}
+        <div class="artist-card">
+            {% if artist.image_url %}
+            <div class="artist-image" style="background-image: url('{{ artist.image_url }}');"></div>
+            {% else %}
+            <div class="artist-image artist-placeholder">
+                <i class="fas fa-user-tie fa-4x"></i>
+            </div>
+            {% endif %}
+            
+            <div class="artist-details">
+                <h3>{{ artist.name }}</h3>
+                
+                {% if artist.birth_date or artist.death_date %}
+                <p class="artist-dates">
+                    {% if artist.birth_date %}{{ artist.birth_date.year }}{% endif %}
+                    {% if artist.death_date %} - {{ artist.death_date.year }}{% elif artist.is_living %} - Present{% endif %}
+                </p>
+                {% endif %}
+                
+                {% if artist.nationality %}
+                <p class="artist-nationality">{{ artist.nationality }}</p>
+                {% endif %}
+                
+                {% if artist.art_movement %}
+                <span class="badge">{{ artist.art_movement }}</span>
+                {% endif %}
+                
+                {% if artist.bio %}
+                <p class="artist-bio">{{ artist.bio[:150] }}{% if artist.bio|length > 150 %}...{% endif %}</p>
+                {% endif %}
+                
+                <div class="artist-actions">
+                    <a href="{{ url_for('edit_artist', artist_id=artist.id) }}" class="btn-small btn-edit">Edit</a>
+                    <form method="POST" action="{{ url_for('delete_artist', artist_id=artist.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this artist?');">
+                        <button type="submit" class="btn-small btn-delete">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No artists yet. Add your first artist!</p>
+        <a href="{{ url_for('create_artist') }}" class="btn btn-primary">Add First Artist</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: var(--primary-color);
+}
+
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.artist-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.artist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.artist-image {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+}
+
+.artist-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.artist-details {
+    padding: 1.5rem;
+}
+
+.artist-details h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.artist-dates {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.artist-nationality {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.artist-bio {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.artist-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-edit {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #9b59b6;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 10px;
+}
+
+.empty-state p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+</style>
+{% endblock %}

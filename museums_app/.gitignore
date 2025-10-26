@@ -1,0 +1,28 @@
+# Virtual Environment
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Environment variables (NEVER commit this!)
+.env
+
+# Logs
+*.log
+/var/log/
+
+# Database (optional - don't commit if it has real data)
+*.sql
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.swp
+*.swo
+*~

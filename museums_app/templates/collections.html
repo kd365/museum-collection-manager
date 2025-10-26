@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Collections - Museum Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 20px;">
+    <div class="page-header">
+        <h1>Collection Items</h1>
+        <div>
+            <a href="{{ url_for('export_csv', table_name='collections') }}" class="btn btn-secondary">Export CSV</a>
+            <a href="{{ url_for('create_collection') }}" class="btn btn-primary">+ Add to Collection</a>
+        </div>
+    </div>
+
+    {% if collections %}
+    <div class="collections-list">
+        {% for item in collections %}
+        <div class="collection-item">
+            <div class="collection-main">
+                <div class="collection-title">
+                    <h3>{{ item.artwork_title }}</h3>
+                    {% if item.artist_name %}
+                    <p class="artist">by {{ item.artist_name }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="collection-details">
+                    <p class="museum"><i class="fas fa-landmark"></i> <strong>{{ item.museum_name }}</strong></p>
+                    
+                    {% if item.accession_number %}
+                    <p class="accession"><i class="fas fa-clipboard"></i> {{ item.accession_number }}</p>
+                    {% endif %}
+                    
+                    <div class="status-badges">
+                        <span class="badge badge-{{ item.status|lower|replace(' ', '-') }}">{{ item.status }}</span>
+                        {% if item.on_display %}
+                        <span class="badge badge-display">On Display</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="collection-meta">
+                {% if item.acquisition_date %}
+                <div class="meta-row">
+                    <span class="meta-label">Acquired:</span>
+                    <span>{{ item.acquisition_date.strftime('%B %d, %Y') }}</span>
+                </div>
+                {% endif %}
+                
+                {% if item.acquisition_method %}
+                <div class="meta-row">
+                    <span class="meta-label">Method:</span>
+                    <span>{{ item.acquisition_method }}</span>
+                </div>
+                {% endif %}
+                
+                {% if item.donor_name %}
+                <div class="meta-row">
+                    <span class="meta-label">Donor:</span>
+                    <span>{{ item.donor_name }}</span>
+                </div>
+                {% endif %}
+                
+                {% if item.acquisition_cost %}
+                <div class="meta-row">
+                    <span class="meta-label">Cost:</span>
+                    <span>${{ "{:,.2f}".format(item.acquisition_cost) }}</span>
+                </div>
+                {% endif %}
+                
+                {% if item.current_value %}
+                <div class="meta-row">
+                    <span class="meta-label">Current Value:</span>
+                    <span>${{ "{:,.2f}".format(item.current_value) }}</span>
+                </div>
+                {% endif %}
+                
+                {% if item.gallery_location %}
+                <div class="meta-row">
+                    <span class="meta-label">Location:</span>
+                    <span>{{ item.gallery_location }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="collection-actions">
+                <a href="{{ url_for('edit_collection', collection_id=item.id) }}" class="btn-small btn-edit">Edit</a>
+                <form method="POST" action="{{ url_for('delete_collection', collection_id=item.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to remove this from the collection?');">
+                    <button type="submit" class="btn-small btn-delete">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No items in the collection yet.</p>
+        <a href="{{ url_for('create_collection') }}" class="btn btn-primary">Add First Item</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.collections-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.collection-item {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr 300px auto;
+    gap: 2rem;
+    align-items: start;
+}
+
+.collection-main h3 {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+}
+
+.artist {
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.museum {
+    margin-bottom: 0.5rem;
+}
+
+.accession {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.status-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge-active {
+    background: #2ecc71;
+}
+
+.badge-on-loan {
+    background: #3498db;
+}
+
+.badge-in-conservation {
+    background: #e67e22;
+}
+
+.badge-storage {
+    background: #95a5a6;
+}
+
+.badge-deaccessioned {
+    background: #e74c3c;
+}
+
+.badge-display {
+    background: #9b59b6;
+}
+
+.collection-meta {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.meta-label {
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.collection-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+    .collection-item {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Museum Collection Manager{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Van Gogh Starry Night Background -->
+<section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1200px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');">
+    <div class="hero-content">
+        <h1 class="hero-title">Museum Collection Manager</h1>
+        <p class="hero-subtitle">Curate, Explore, and Preserve Art History</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('create_artwork') }}" class="btn btn-primary">Add Artwork</a>
+            <a href="{{ url_for('artworks') }}" class="btn btn-secondary">Browse Collection</a>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Dashboard -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                <div class="stat-number">{{ stats.artists or 0 }}</div>
+                <div class="stat-label">Artists</div>
+                <a href="{{ url_for('artists') }}" class="stat-link">View All →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-image"></i></div>
+                <div class="stat-number">{{ stats.artworks or 0 }}</div>
+                <div class="stat-label">Artworks</div>
+                <a href="{{ url_for('artworks') }}" class="stat-link">View All →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-landmark"></i></div>
+                <div class="stat-number">{{ stats.museums or 0 }}</div>
+                <div class="stat-label">Museums</div>
+                <a href="{{ url_for('museums') }}" class="stat-link">View All →</a>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-folder-open"></i></div>
+                <div class="stat-number">{{ stats.collections or 0 }}</div>
+                <div class="stat-label">Collection Items</div>
+                <a href="{{ url_for('collections') }}" class="stat-link">View All →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Artworks Section -->
+<section class="recent-section">
+    <div class="container">
+        <h2 class="section-title">Recently Added Artworks</h2>
+        
+        <div class="recent-layout">
+            <!-- Side Panel with Monet Water Lilies -->
+            <div class="side-panel" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/800px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg');">
+                <div class="panel-overlay">
+                    <h3>Featured Collection</h3>
+                    <p>Impressionist Masterpieces</p>
+                    <a href="{{ url_for('sql_playground') }}" class="btn btn-light">Explore SQL Queries</a>
+                </div>
+            </div>
+
+            <!-- Recent Artworks Grid -->
+            <div class="artworks-grid">
+                {% if stats.recent_artworks %}
+                    {% for artwork in stats.recent_artworks %}
+                    <div class="artwork-card">
+                        {% if artwork.image_url %}
+                        <div class="artwork-image" style="background-image: url('{{ artwork.image_url }}');"></div>
+                        {% else %}
+                        <div class="artwork-image artwork-placeholder">
+                            <i class="fas fa-palette fa-3x"></i>
+                        </div>
+                        {% endif %}
+                        <div class="artwork-info">
+                            <h4>{{ artwork.title }}</h4>
+                            <p class="artist-name">{{ artwork.artist_name or 'Unknown Artist' }}</p>
+                            {% if artwork.creation_date %}
+                            <p class="creation-date">{{ artwork.creation_date.year }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No artworks yet. Start building your collection!</p>
+                        <a href="{{ url_for('create_artwork') }}" class="btn btn-primary">Add First Artwork</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="actions-section">
+    <div class="container">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="{{ url_for('create_artist') }}" class="action-card">
+                <div class="action-icon"><i class="fas fa-user-tie"></i></div>
+                <h3>Add Artist</h3>
+                <p>Register a new artist in the collection</p>
+            </a>
+            <a href="{{ url_for('create_artwork') }}" class="action-card">
+                <div class="action-icon"><i class="fas fa-image"></i></div>
+                <h3>Add Artwork</h3>
+                <p>Document a new piece of art</p>
+            </a>
+            <a href="{{ url_for('create_museum') }}" class="action-card">
+                <div class="action-icon"><i class="fas fa-landmark"></i></div>
+                <h3>Add Museum</h3>
+                <p>Register a new museum location</p>
+            </a>
+            <a href="{{ url_for('create_collection') }}" class="action-card">
+                <div class="action-icon"><i class="fas fa-folder-open"></i></div>
+                <h3>Add to Collection</h3>
+                <p>Link artwork to a museum</p>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

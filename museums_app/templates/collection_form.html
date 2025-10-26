@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Museum Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 3rem 20px;">
+    <div class="form-container">
+        <h1>{{ title }}</h1>
+        
+        <form method="POST" class="form">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                
+                <div class="form-group">
+                    {{ form.museum_id.label }}
+                    {{ form.museum_id(class="form-control") }}
+                    {% if form.museum_id.errors %}
+                        <span class="error">{{ form.museum_id.errors[0] }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.artwork_id.label }}
+                    {{ form.artwork_id(class="form-control") }}
+                    {% if form.artwork_id.errors %}
+                        <span class="error">{{ form.artwork_id.errors[0] }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.accession_number.label }}
+                    {{ form.accession_number(class="form-control", placeholder="2024.001.05") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Acquisition Details</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.acquisition_date.label }}
+                        {{ form.acquisition_date(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.acquisition_method.label }}
+                        {{ form.acquisition_method(class="form-control") }}
+                        {% if form.acquisition_method.errors %}
+                            <span class="error">{{ form.acquisition_method.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.acquisition_cost.label }}
+                        {{ form.acquisition_cost(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.donor_name.label }}
+                        {{ form.donor_name(class="form-control", placeholder="If donated or bequeathed") }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.acquisition_details.label }}
+                    {{ form.acquisition_details(class="form-control", rows="3") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Current Status & Location</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.status.label }}
+                        {{ form.status(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.gallery_location.label }}
+                        {{ form.gallery_location(class="form-control", placeholder="Gallery 3, Wall A") }}
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    {{ form.on_display(class="form-checkbox") }}
+                    {{ form.on_display.label }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.current_value.label }}
+                    {{ form.current_value(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Collection Entry</button>
+                <a href="{{ url_for('collections') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

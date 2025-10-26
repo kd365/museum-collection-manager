@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Museum Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; padding: 3rem 20px;">
+    <div class="form-container">
+        <h1>{{ title }}</h1>
+        
+        <form method="POST" class="form">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title(class="form-control") }}
+                    {% if form.title.errors %}
+                        <span class="error">{{ form.title.errors[0] }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.artist_id.label }}
+                    {{ form.artist_id(class="form-control") }}
+                    {% if form.artist_id.errors %}
+                        <span class="error">{{ form.artist.errors[0] }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.medium.label }}
+                        {{ form.medium(class="form-control", placeholder="Oil on canvas") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.creation_date.label }}
+                        {{ form.creation_date(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.art_movement.label }}
+                        {{ form.art_movement(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.subject.label }}
+                        {{ form.subject(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Dimensions</h3>
+                
+                <div class="form-row three-col">
+                    <div class="form-group">
+                        {{ form.dimension_H.label }}
+                        {{ form.dimension_H(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.dimension_W.label }}
+                        {{ form.dimension_W(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.dimension_D.label }}
+                        {{ form.dimension_D(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.dimension_unit.label }}
+                    {{ form.dimension_unit(class="form-control") }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.weight.label }}
+                        {{ form.weight(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.weight_unit.label }}
+                        {{ form.weight_unit(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Valuation & Authentication</h3>
+                
+                <div class="form-group">
+                    {{ form.estimated_value.label }}
+                    {{ form.estimated_value(class="form-control") }}
+                </div>
+
+                <div class="form-group checkbox-group">
+                    {{ form.is_signed(class="form-checkbox") }}
+                    {{ form.is_signed.label }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.signature_location.label }}
+                    {{ form.signature_location(class="form-control", placeholder="Lower right corner") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Additional Information</h3>
+                
+                <div class="form-group">
+                    {{ form.description.label }}
+                    {{ form.description(class="form-control", rows="4") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.image_url.label }}
+                    {{ form.image_url(class="form-control", placeholder="https://example.com/artwork.jpg") }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Artwork</button>
+                <a href="{{ url_for('artworks') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 768px) {
+    .three-col {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
