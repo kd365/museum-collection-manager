@@ -1,6 +1,23 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, DateField, DecimalField, SelectField, BooleanField, IntegerField
-from wtforms.validators import DataRequired, Optional, URL, Length, NumberRange
+from wtforms import (StringField, TextAreaField, DateField, DecimalField,
+                     SelectField, BooleanField, IntegerField, PasswordField)
+from wtforms.validators import (DataRequired, Optional, URL, Length,
+                                NumberRange, Email, EqualTo)
+
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=80)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+
 
 class ArtistForm(FlaskForm):
     name = StringField('Artist Name', validators=[DataRequired(), Length(max=200)])
@@ -10,7 +27,7 @@ class ArtistForm(FlaskForm):
     birth_place = StringField('Birth Place', validators=[Optional(), Length(max=100)])
     death_place = StringField('Death Place', validators=[Optional(), Length(max=100)])
     nationality = StringField('Nationality', validators=[Optional(), Length(max=100)])
-    
+
     art_movement = SelectField('Art Movement', choices=[
         ('', 'Select Movement'),
         ('Renaissance', 'Renaissance'),
@@ -31,7 +48,7 @@ class ArtistForm(FlaskForm):
         ('Modern', 'Modern'),
         ('Other', 'Other')
     ], validators=[Optional()])
-    
+
     primary_medium = SelectField('Primary Medium', choices=[
         ('', 'Select Medium'),
         ('Painting', 'Painting'),
@@ -44,17 +61,18 @@ class ArtistForm(FlaskForm):
         ('Installation', 'Installation'),
         ('Other', 'Other')
     ], validators=[Optional()])
-    
+
     bio = TextAreaField('Biography', validators=[Optional()])
     website = StringField('Website', validators=[Optional(), URL(), Length(max=255)])
     image_url = StringField('Portrait URL', validators=[Optional(), URL(), Length(max=255)])
     instagram = StringField('Instagram Handle', validators=[Optional(), Length(max=100)])
 
+
 class ArtworkForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=200)])
     artist_id = SelectField('Artist', coerce=int, validators=[DataRequired()])
     medium = StringField('Medium', validators=[Optional(), Length(max=100)])
-    
+
     art_movement = SelectField('Art Movement', choices=[
         ('', 'Select Movement'),
         ('Renaissance', 'Renaissance'),
@@ -64,7 +82,7 @@ class ArtworkForm(FlaskForm):
         ('Contemporary', 'Contemporary'),
         ('Other', 'Other')
     ], validators=[Optional()])
-    
+
     subject = SelectField('Subject', choices=[
         ('', 'Select Subject'),
         ('Portrait', 'Portrait'),
@@ -74,36 +92,39 @@ class ArtworkForm(FlaskForm):
         ('Religious', 'Religious'),
         ('Other', 'Other')
     ], validators=[Optional()])
-    
+
     creation_date = DateField('Creation Date', validators=[Optional()], format='%Y-%m-%d')
-    
+
     dimension_H = DecimalField('Height', validators=[Optional(), NumberRange(min=0)], places=2)
     dimension_W = DecimalField('Width', validators=[Optional(), NumberRange(min=0)], places=2)
     dimension_D = DecimalField('Depth', validators=[Optional(), NumberRange(min=0)], places=2)
-    
+
     dimension_unit = SelectField('Unit', choices=[
         ('inches', 'Inches'),
         ('cm', 'Centimeters'),
         ('meters', 'Meters'),
         ('feet', 'Feet')
     ], default='inches')
-    
+
     weight = DecimalField('Weight', validators=[Optional(), NumberRange(min=0)], places=2)
     weight_unit = SelectField('Weight Unit', choices=[
         ('lbs', 'Pounds'),
         ('kg', 'Kilograms'),
         ('grams', 'Grams')
     ], default='lbs')
-    
-    estimated_value = DecimalField('Estimated Value ($)', validators=[Optional(), NumberRange(min=0)], places=2)
+
+    estimated_value = DecimalField('Estimated Value ($)',
+                                   validators=[Optional(), NumberRange(min=0)], places=2)
     description = TextAreaField('Description', validators=[Optional()])
     image_url = StringField('Image URL', validators=[Optional(), URL(), Length(max=255)])
     is_signed = BooleanField('Signed')
-    signature_location = StringField('Signature Location', validators=[Optional(), Length(max=100)])
+    signature_location = StringField('Signature Location',
+                                     validators=[Optional(), Length(max=100)])
+
 
 class MuseumForm(FlaskForm):
     name = StringField('Museum Name', validators=[DataRequired(), Length(max=100)])
-    
+
     museum_type = SelectField('Type', choices=[
         ('', 'Select Type'),
         ('Art', 'Art Museum'),
@@ -113,29 +134,33 @@ class MuseumForm(FlaskForm):
         ('Modern Art', 'Modern Art Museum'),
         ('Other', 'Other')
     ], validators=[Optional()])
-    
+
     address = StringField('Address', validators=[Optional(), Length(max=200)])
     city = StringField('City', validators=[DataRequired(), Length(max=100)])
     state_province = StringField('State/Province', validators=[Optional(), Length(max=100)])
     country = StringField('Country', validators=[DataRequired(), Length(max=100)])
     postal_code = StringField('Postal Code', validators=[Optional(), Length(max=20)])
-    
+
     established_date = DateField('Established Date', validators=[Optional()], format='%Y-%m-%d')
     website = StringField('Website', validators=[Optional(), URL(), Length(max=200)])
     phone = StringField('Phone', validators=[Optional(), Length(max=20)])
     email = StringField('Email', validators=[Optional(), Length(max=100)])
     description = TextAreaField('Description', validators=[Optional()])
-    
-    annual_visitors = IntegerField('Annual Visitors', validators=[Optional(), NumberRange(min=0)])
-    admission_fee = DecimalField('Admission Fee ($)', validators=[Optional(), NumberRange(min=0)], places=2)
+
+    annual_visitors = IntegerField('Annual Visitors',
+                                   validators=[Optional(), NumberRange(min=0)])
+    admission_fee = DecimalField('Admission Fee ($)',
+                                 validators=[Optional(), NumberRange(min=0)], places=2)
+
 
 class CollectionForm(FlaskForm):
     museum_id = SelectField('Museum', coerce=int, validators=[DataRequired()])
     artwork_id = SelectField('Artwork', coerce=int, validators=[DataRequired()])
-    accession_number = StringField('Accession Number', validators=[Optional(), Length(max=50)])
-    
+    accession_number = StringField('Accession Number',
+                                   validators=[Optional(), Length(max=50)])
+
     acquisition_date = DateField('Acquisition Date', validators=[Optional()], format='%Y-%m-%d')
-    
+
     acquisition_method = SelectField('Acquisition Method', choices=[
         ('Purchase', 'Purchase'),
         ('Donation', 'Donation'),
@@ -144,11 +169,12 @@ class CollectionForm(FlaskForm):
         ('Commission', 'Commission'),
         ('Transfer', 'Transfer')
     ], validators=[DataRequired()])
-    
-    acquisition_cost = DecimalField('Acquisition Cost ($)', validators=[Optional(), NumberRange(min=0)], places=2)
+
+    acquisition_cost = DecimalField('Acquisition Cost ($)',
+                                    validators=[Optional(), NumberRange(min=0)], places=2)
     acquisition_details = TextAreaField('Acquisition Details', validators=[Optional()])
     donor_name = StringField('Donor Name', validators=[Optional(), Length(max=200)])
-    
+
     status = SelectField('Status', choices=[
         ('Active', 'Active'),
         ('On Loan', 'On Loan'),
@@ -156,11 +182,14 @@ class CollectionForm(FlaskForm):
         ('Storage', 'Storage'),
         ('Deaccessioned', 'Deaccessioned')
     ], default='Active')
-    
-    gallery_location = StringField('Gallery Location', validators=[Optional(), Length(max=100)])
+
+    gallery_location = StringField('Gallery Location',
+                                    validators=[Optional(), Length(max=100)])
     on_display = BooleanField('Currently on Display', default=False)
-    
-    current_value = DecimalField('Current Value ($)', validators=[Optional(), NumberRange(min=0)], places=2)
+
+    current_value = DecimalField('Current Value ($)',
+                                 validators=[Optional(), NumberRange(min=0)], places=2)
+
 
 class SQLQueryForm(FlaskForm):
     table = SelectField('Table', choices=[
@@ -169,11 +198,24 @@ class SQLQueryForm(FlaskForm):
         ('museums', 'Museums'),
         ('collections', 'Collections')
     ], validators=[DataRequired()])
-    
-    columns = StringField('Columns (comma-separated, or * for all)', 
-                         default='*', 
-                         validators=[DataRequired()])
-    
-    where_clause = StringField('WHERE condition (optional)', validators=[Optional()])
+
+    columns = StringField('Columns (comma-separated, or * for all)',
+                          default='*',
+                          validators=[DataRequired()])
+
+    where_column = StringField('WHERE column', validators=[Optional()])
+    where_operator = SelectField('Operator', choices=[
+        ('', 'Select'),
+        ('=', '='),
+        ('!=', '!='),
+        ('>', '>'),
+        ('<', '<'),
+        ('>=', '>='),
+        ('<=', '<='),
+        ('LIKE', 'LIKE'),
+    ], validators=[Optional()])
+    where_value = StringField('Value', validators=[Optional()])
+
     order_by = StringField('ORDER BY (optional)', validators=[Optional()])
-    limit = IntegerField('LIMIT', default=50, validators=[Optional(), NumberRange(min=1, max=1000)])
+    limit = IntegerField('LIMIT', default=50,
+                         validators=[Optional(), NumberRange(min=1, max=1000)])

@@ -6,12 +6,14 @@
 <div class="container" style="padding: 3rem 20px;">
     <div class="page-header">
         <h1>Artists</h1>
+        {% if current_user.is_authenticated and current_user.is_admin %}
         <a href="{{ url_for('create_artist') }}" class="btn btn-primary">+ Add Artist</a>
+        {% endif %}
     </div>
 
-    {% if artists %}
+    {% if pagination.items %}
     <div class="artists-grid">
-        {% for artist in artists %}
+        {% for artist in pagination.items %}
         <div class="artist-card">
             {% if artist.image_url %}
             <div class="artist-image" style="background-image: url('{{ artist.image_url }}');"></div>
@@ -43,12 +45,14 @@
                 <p class="artist-bio">{{ artist.bio[:150] }}{% if artist.bio|length > 150 %}...{% endif %}</p>
                 {% endif %}
                 
+                {% if current_user.is_authenticated and current_user.is_admin %}
                 <div class="artist-actions">
                     <a href="{{ url_for('edit_artist', artist_id=artist.id) }}" class="btn-small btn-edit">Edit</a>
                     <form method="POST" action="{{ url_for('delete_artist', artist_id=artist.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this artist?');">
                         <button type="submit" class="btn-small btn-delete">Delete</button>
                     </form>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -58,6 +62,7 @@
         <p>No artists yet. Add your first artist!</p>
         <a href="{{ url_for('create_artist') }}" class="btn btn-primary">Add First Artist</a>
     </div>
+    {% include '_pagination.html' %}
     {% endif %}
 </div>
 

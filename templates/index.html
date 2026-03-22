@@ -76,7 +76,7 @@
                         {% endif %}
                         <div class="artwork-info">
                             <h4>{{ artwork.title }}</h4>
-                            <p class="artist-name">{{ artwork.artist_name or 'Unknown Artist' }}</p>
+                            <p class="artist-name">{{ artwork.artist.name if artwork.artist else 'Unknown Artist' }}</p>
                             {% if artwork.creation_date %}
                             <p class="creation-date">{{ artwork.creation_date.year }}</p>
                             {% endif %}

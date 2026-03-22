@@ -7,14 +7,18 @@
     <div class="page-header">
         <h1>Museums</h1>
         <div>
+            {% if current_user.is_authenticated %}
             <a href="{{ url_for('export_csv', table_name='museums') }}" class="btn btn-secondary">Export CSV</a>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.is_admin %}
             <a href="{{ url_for('create_museum') }}" class="btn btn-primary">+ Add Museum</a>
+            {% endif %}
         </div>
     </div>
 
-    {% if museums %}
+    {% if pagination.items %}
     <div class="museums-grid">
-        {% for museum in museums %}
+        {% for museum in pagination.items %}
         <div class="museum-card">
             <div class="museum-header">
                 <h3>{{ museum.name }}</h3>
@@ -49,17 +53,29 @@
                 {% if museum.website %}
                 <a href="{{ museum.website }}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Visit Website</a>
                 {% endif %}
+
+                {% if museum.ai_collection_description %}
+                <div style="margin-top: 1rem; padding: 1rem; background: linear-gradient(135deg, #f5f0ff, #ede7f6); border-radius: 8px; border-left: 3px solid var(--secondary-color);">
+                    <p style="font-size: 0.85rem; color: var(--secondary-color); margin-bottom: 0.5rem; font-weight: 600;">
+                        <i class="fas fa-wand-magic-sparkles"></i> AI Collection Overview
+                    </p>
+                    <p style="font-size: 0.9rem; color: var(--text-dark); line-height: 1.5;">{{ museum.ai_collection_description }}</p>
+                </div>
+                {% endif %}
             </div>
             
+            {% if current_user.is_authenticated and current_user.is_admin %}
             <div class="museum-actions">
                 <a href="{{ url_for('edit_museum', museum_id=museum.id) }}" class="btn-small btn-edit">Edit</a>
                 <form method="POST" action="{{ url_for('delete_museum', museum_id=museum.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this museum?');">
                     <button type="submit" class="btn-small btn-delete">Delete</button>
                 </form>
             </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
+    {% include '_pagination.html' %}
     {% else %}
     <div class="empty-state">
         <p>No museums registered yet.</p>

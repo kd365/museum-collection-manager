@@ -20,7 +20,12 @@
                 <li><a href="{{ url_for('artworks') }}">Artworks</a></li>
                 <li><a href="{{ url_for('museums') }}">Museums</a></li>
                 <li><a href="{{ url_for('collections') }}">Collections</a></li>
+                {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('sql_playground') }}">SQL Playground</a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> {{ current_user.username }}</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
@@ -44,7 +49,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Museum Collection Manager | Built with Flask & MySQL</p>
+            <p>&copy; 2025 Museum Collection Manager | Built with Flask & SQLAlchemy</p>
         </div>
     </footer>
 

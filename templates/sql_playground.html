@@ -29,9 +29,15 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.where_clause.label }}
-                    {{ form.where_clause(class="form-control", placeholder="e.g., name LIKE '%Van Gogh%'") }}
-                    <small class="help-text">Optional filter condition</small>
+                    <label>WHERE condition (optional)</label>
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center;">
+                        <select name="where_column" id="where-column" class="form-control">
+                            <option value="">Select column</option>
+                        </select>
+                        {{ form.where_operator(class="form-control") }}
+                        {{ form.where_value(class="form-control", placeholder="value") }}
+                    </div>
+                    <small class="help-text">Columns update based on selected table</small>
                 </div>
 
                 <div class="form-group">
@@ -54,15 +60,15 @@
                 <h3>Example Queries</h3>
                 <div class="example-item">
                     <strong>All Impressionist artworks:</strong>
-                    <code>Table: artworks, WHERE: art_movement = 'Impressionism'</code>
+                    <code>Table: artworks, Column: art_movement, Operator: =, Value: Impressionism</code>
                 </div>
                 <div class="example-item">
-                    <strong>Artists by country:</strong>
-                    <code>Table: artists, Columns: nationality, COUNT(*), Order: COUNT(*) DESC</code>
+                    <strong>Search artists by name:</strong>
+                    <code>Table: artists, Column: name, Operator: LIKE, Value: %Van%</code>
                 </div>
                 <div class="example-item">
                     <strong>High-value artworks:</strong>
-                    <code>Table: artworks, WHERE: estimated_value > 100000, Order: estimated_value DESC</code>
+                    <code>Table: artworks, Column: estimated_value, Operator: >, Value: 10000000</code>
                 </div>
             </div>
         </div>
@@ -276,4 +282,33 @@
     }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableSelect = document.getElementById('table');
+    const columnSelect = document.getElementById('where-column');
+
+    function updateColumns() {
+        const table = tableSelect.value;
+        if (!table) return;
+
+        fetch('/api/table-columns/' + table)
+            .then(response => response.json())
+            .then(columns => {
+                columnSelect.innerHTML = '<option value="">Select column</option>';
+                columns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    columnSelect.appendChild(option);
+                });
+            })
+            .catch(err => console.error('Failed to load columns:', err));
+    }
+
+    tableSelect.addEventListener('change', updateColumns);
+    // Load columns for initially selected table
+    updateColumns();
+});
+</script>
 {% endblock %}
